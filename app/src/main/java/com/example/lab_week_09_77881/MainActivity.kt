@@ -16,6 +16,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.layout.Column
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.Button
+import androidx.compose.material3.TextField
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.lazy.items
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,9 +42,72 @@ class MainActivity : ComponentActivity() {
                     // and set it as the color of the surface
                     color = MaterialTheme.colorScheme.background
                 ) {
+                    val list = listOf("Tanu", "Tina", "Tono")
                     //Here, we call the Home composable
-                    Home()
+                    Home(list)
                 }
+            }
+        }
+    }
+}
+
+@Composable
+fun Home(
+    //Here, we define a parameter called items
+    items: List<String>,
+) {
+    //Here, we use LazyColumn to lazily display a list of items horizontally
+    //LazyColumn is more efficient than Column
+    //because it only composes and lays out the currently visible items
+    //much like a RecyclerView
+    //You can also use LazyRow to lazily display a list of items horizontally
+    LazyColumn {
+        //Here, we use item to display an item inside the LazyColumn
+        item {
+            Column(
+                //Modifier.padding(16.dp) is used to add padding to the Column
+                //You can also use Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                //to add padding horizontally and vertically
+                //or Modifier.padding(start = 16.dp, top = 8.dp, end = 16.dp, bottom = 8.dp)
+                //to add padding to each side
+                modifier = Modifier.padding(16.dp).fillMaxSize(),
+                //Alignment.CenterHorizontally is used to align the Column horizontally
+                //You can also use verticalArrangement = Arrangement.Center to align the Column vertically
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(text = stringResource(
+                    id = R.string.enter_item)
+                )
+                //Here, we use TextField to display a text input field
+                TextField(
+                    //Set the value of the input field
+                    value = "",
+                    //Set the keyboard type of the input field
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Number
+                    ),
+                    //Set what happens when the value of the input field changes
+                        onValueChange = {
+                    }
+                )
+                //Here, we use Button to display a button
+                //the onClick parameter is used to set what happens when the button is clicked
+                Button(onClick = { }) {
+                    //Set the text of the button
+                    Text(text = stringResource(
+                        id = R.string.button_click)
+                    )
+                }
+            }
+        }
+        //Here, we use items to display a list of items inside the LazyColumn
+        //This is the RecyclerView replacement
+        items(items) { item ->
+            Column(
+                modifier = Modifier.padding(vertical = 4.dp).fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(text = item)
             }
         }
     }
@@ -43,16 +115,6 @@ class MainActivity : ComponentActivity() {
 
 @Preview(showBackground = true)
 @Composable
-fun Home() {
-    //Here, we use Column to display a list of items vertically
-    //You can also use Row to display a list of items horizontally
-    Column {
-        //Here, we use Text to display a text
-        Text(
-            //We use stringResource to get the string from Strings.xml
-            //and set it as the text
-            text = stringResource(id = R.string.list_title)
-        )
-    }
+fun PreviewHome() {
+    Home(listOf("Tanu", "Tina", "Tono"))
 }
-
