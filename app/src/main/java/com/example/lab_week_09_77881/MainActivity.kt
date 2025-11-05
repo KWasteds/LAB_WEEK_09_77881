@@ -28,7 +28,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.foundation.lazy.items
-
+import com.example.lab_week_09_77881.ui.theme.OnBackgroundTitleText
+import com.example.lab_week_09_77881.ui.theme.OnBackgroundItemText
+import com.example.lab_week_09_77881.ui.theme.PrimaryTextButton
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -123,40 +125,37 @@ fun HomeContent(
                 //You can also use verticalArrangement = Arrangement.Center to align the Column vertically
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-            Text(text = stringResource(
-                id = R.string.enter_item)
-            )
-            //Here, we use TextField to display a text input field
-            TextField(
-                //Set the value of the input field
-                value = inputField.name,
-                //Set the keyboard type of the input field
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Text
-                ),
-                //Set what happens when the value of the input field changes
-                onValueChange = {
-                    //Here, we call the onInputValueChange lambda function
-                    //and pass the value of the input field as a parameter
-                    //This is so that we can update the value of the inputField
-                    onInputValueChange(it)
-                }
-            )
-                //Here, we use Button to display a button
-                //the onClick parameter is used to set what happens when the button is clicked
-                Button(onClick = {
-                    //Here, we call the onButtonClick lambda function
-                    //This is so that we can add the inputField value to the listData
-                    //and reset the value of the inputField
+                //Here, we call the OnBackgroundTitleText UI Element
+                OnBackgroundTitleText(text = stringResource(
+                    id = R.string.enter_item)
+                )
+
+                //Here, we use TextField to display a text input field
+                TextField(
+                    //Set the value of the input field
+                    value = inputField.name,
+                    //Set the keyboard type of the input field
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Text
+                    ),
+                    //Set what happens when the value of the input field changes
+                    onValueChange = {
+                        //Here, we call the onInputValueChange lambda function
+                        //and pass the value of the input field as a parameter
+                        //This is so that we can update the value of the inputField
+                        onInputValueChange(it)
+                    }
+                )
+
+                //Here, we call the PrimaryTextButton UI Element
+                PrimaryTextButton(text = stringResource(
+                    id = R.string.button_click)
+                ) {
                     onButtonClick()
-                }) {
-                    //Set the text of the button
-                    Text(text = stringResource(
-                        id = R.string.button_click)
-                    )
                 }
             }
         }
+
         //Here, we use items to display a list of items inside the LazyColumn
         //This is the RecyclerView replacement
         //We pass the listData as a parameter
@@ -165,7 +164,7 @@ fun HomeContent(
                 modifier = Modifier.padding(vertical = 4.dp).fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = item.name)
+                OnBackgroundItemText(text = item.name)
             }
         }
     }
