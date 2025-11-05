@@ -28,8 +28,9 @@ import com.example.lab_week_09_77881.ui.theme.LAB_WEEK_09_77881Theme
 import com.example.lab_week_09_77881.ui.theme.OnBackgroundItemText
 import com.example.lab_week_09_77881.ui.theme.OnBackgroundTitleText
 import com.example.lab_week_09_77881.ui.theme.PrimaryTextButton
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.Types
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -98,9 +99,13 @@ fun Home(
             }
         },
         navigateFromHomeToResult = {
-            // Convert list to JSON for passing through navigation
-            val gson = Gson()
-            val json = gson.toJson(listData)
+            // Gunakan Moshi dengan KotlinJsonAdapterFactory
+            val moshi = Moshi.Builder()
+                .add(KotlinJsonAdapterFactory())
+                .build()
+            val type = Types.newParameterizedType(List::class.java, Student::class.java)
+            val adapter = moshi.adapter<List<Student>>(type)
+            val json = adapter.toJson(listData)
             navigateFromHomeToResult(json)
         }
     )
@@ -154,10 +159,12 @@ fun HomeContent(
 
 @Composable
 fun ResultContent(listDataJson: String) {
-    // Convert JSON back into list of Student
-    val gson = Gson()
-    val type = object : TypeToken<List<Student>>() {}.type
-    val listData: List<Student> = gson.fromJson(listDataJson, type)
+    val moshi = Moshi.Builder()
+        .add(KotlinJsonAdapterFactory()) // Tambahkan ini juga di sisi deserialization
+        .build()
+    val type = Types.newParameterizedType(List::class.java, Student::class.java)
+    val adapter = moshi.adapter<List<Student>>(type)
+    val listData = adapter.fromJson(listDataJson) ?: emptyList()
 
     Column(
         modifier = Modifier
@@ -165,18 +172,26 @@ fun ResultContent(listDataJson: String) {
             .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Display full structure like in your screenshot
-        OnBackgroundItemText(text = listData.toString())
+        OnBackgroundTitleText(text = "Result List")
+
+        LazyColumn(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            items(listData) { student ->
+                OnBackgroundItemText(text = student.name)
+            }
+        }
     }
 }
 
 @Composable
 fun OnBackgroundItemText(
     text: String,
-    modifier: Modifier = Modifier // Add this parameter
+    modifier: Modifier = Modifier
 ) {
     Text(
         text = text,
-        modifier = modifier // Apply the modifier here
+        modifier = modifier
     )
 }
